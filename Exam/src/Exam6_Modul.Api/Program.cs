@@ -1,5 +1,11 @@
 using Exam6_Modul.Api.Data;
 using Microsoft.EntityFrameworkCore;
+using Exam6_Modul.Api.Repositories;
+using Exam6_Modul.Api.Services;
+using Exam6_Modul.Api.Mapping;
+using Exam6_Modul.Api.Configurations;
+using Serilog;
+using FluentValidation;
 
 namespace Exam6_Modul.Api;
 
@@ -15,8 +21,26 @@ public class Program
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(connectionString));
 
-        // Add services to the container.
-        builder.Services.AddControllers();
+        // Create Serilog logger and register with Host
+        var logger = SerilogConfig.CreateLogger(builder.Configuration);
+        builder.Host.UseSerilog(logger);
+        builder.Services.AddSingleton<Serilog.ILogger>(logger);
+
+        // Add services to the container and register validation filter
+        builder.Services.AddScoped<ValidationFilter>();
+        builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>());
+        // Register FluentValidation validators explicitly
+        builder.Services.AddTransient<FluentValidation.IValidator<Exam6_Modul.Api.Dtos.CategoryCreateDto>, Exam6_Modul.Api.Configurations.Validators.CategoryCreateValidator>();
+        builder.Services.AddTransient<FluentValidation.IValidator<Exam6_Modul.Api.Dtos.CategoryUpdateDto>, Exam6_Modul.Api.Configurations.Validators.CategoryUpdateValidator>();
+        builder.Services.AddTransient<FluentValidation.IValidator<Exam6_Modul.Api.Dtos.FoodCreateDto>, Exam6_Modul.Api.Configurations.Validators.FoodCreateValidator>();
+        builder.Services.AddTransient<FluentValidation.IValidator<Exam6_Modul.Api.Dtos.FoodUpdateDto>, Exam6_Modul.Api.Configurations.Validators.FoodUpdateValidator>();
+        // Register repositories, services and mappers
+        builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+        builder.Services.AddScoped<IFoodRepository, FoodRepository>();
+        builder.Services.AddScoped<CategoryMapper>();
+        builder.Services.AddScoped<FoodMapper>();
+        builder.Services.AddScoped<ICategoryService, CategoryService>();
+        builder.Services.AddScoped<IFoodService, FoodService>();
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -38,6 +62,9 @@ public class Program
         }
 
         app.UseHttpsRedirection();
+
+        // Serilog request logging middleware (custom)
+        app.UseMiddleware<Exam6_Modul.Api.Logs.RequestLoggingMiddleware>();
 
         app.UseAuthorization();
 
