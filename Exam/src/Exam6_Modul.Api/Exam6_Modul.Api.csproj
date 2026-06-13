@@ -27,12 +27,4 @@
 		<PackageReference Include="Serilog.Sinks.MSSqlServer" Version="8.2.2" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Configurations\" />
-	  <Folder Include="Logs\" />
-	  <Folder Include="Mapping\" />
-	  <Folder Include="Repositories\" />
-	  <Folder Include="Services\" />
-	</ItemGroup>
 </Project>
