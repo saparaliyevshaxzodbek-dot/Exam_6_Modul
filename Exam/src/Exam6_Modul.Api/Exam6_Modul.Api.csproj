@@ -29,15 +29,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Entitiys\" />
-	  <Folder Include="Configurations\" />
-	  <Folder Include="Data\" />
 	  <Folder Include="Dtos\" />
-	  <Folder Include="FluentApies\" />
-	  <Folder Include="Logs\" />
-	  <Folder Include="Mapping\" />
-	  <Folder Include="Migrations\" />
-	  <Folder Include="Services\" />
-	  <Folder Include="Repositories\" />
 	</ItemGroup>
 </Project>
