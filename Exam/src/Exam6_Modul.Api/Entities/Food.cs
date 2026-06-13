@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Exam6_Modul.Api.Entities;
 
-public class Category
+public class Food
 {
     public int Id { get; set; }
 
@@ -11,9 +10,13 @@ public class Category
 
     public string? Description { get; set; }
 
-    public bool IsActive { get; set; } = true;
+    public decimal Price { get; set; }
+
+    public bool IsAvailable { get; set; } = true;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    public List<Food> Foods { get; set; } = new();
+    // Foreign key to Category
+    public int CategoryId { get; set; }
+    public Category? Category { get; set; }
 }
